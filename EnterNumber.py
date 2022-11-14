@@ -7,13 +7,15 @@
 
 
 from PyQt6 import QtCore, QtGui, QtWidgets
+from PyQt6.QtWidgets import QWidget
 
 
-class Ui_MainWindow(object):
-    def setupUi(self, MainWindow):
-        MainWindow.setObjectName("MainWindow")
-        MainWindow.resize(585, 214)
-        self.centralwidget = QtWidgets.QWidget(MainWindow)
+class EnterNumberWindow(QWidget):
+    def __init__(self):
+        super().__init__()
+        self.setObjectName("MainWindow")
+        self.resize(585, 214)
+        self.centralwidget = QtWidgets.QWidget(self)
         self.centralwidget.setObjectName("centralwidget")
         self.textEdit = QtWidgets.QTextEdit(self.centralwidget)
         self.textEdit.setGeometry(QtCore.QRect(30, 40, 501, 71))
@@ -57,17 +59,10 @@ class Ui_MainWindow(object):
         self.pushButton_12 = QtWidgets.QPushButton(self.centralwidget)
         self.pushButton_12.setGeometry(QtCore.QRect(430, 130, 75, 31))
         self.pushButton_12.setObjectName("pushButton_12")
-        MainWindow.setCentralWidget(self.centralwidget)
-        self.menubar = QtWidgets.QMenuBar(MainWindow)
-        self.menubar.setGeometry(QtCore.QRect(0, 0, 585, 21))
-        self.menubar.setObjectName("menubar")
-        MainWindow.setMenuBar(self.menubar)
-        self.statusbar = QtWidgets.QStatusBar(MainWindow)
-        self.statusbar.setObjectName("statusbar")
-        MainWindow.setStatusBar(self.statusbar)
 
-        self.retranslateUi(MainWindow)
-        QtCore.QMetaObject.connectSlotsByName(MainWindow)
+
+        self.retranslateUi(self)
+        QtCore.QMetaObject.connectSlotsByName(self)
 
     def retranslateUi(self, MainWindow):
         _translate = QtCore.QCoreApplication.translate
@@ -85,3 +80,8 @@ class Ui_MainWindow(object):
         self.pushButton_11.setText(_translate("MainWindow", "0"))
         self.pushButton_14.setText(_translate("MainWindow", "9"))
         self.pushButton_12.setText(_translate("MainWindow", "Назад"))
+    def go_to_first(self):
+        self.stackedWidget.setCurrentIndex(0)
+
+    def go_to_second(self):
+        self.stackedWidget.setCurrentIndex(1)
