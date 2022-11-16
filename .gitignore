@@ -3,3 +3,9 @@
 *.zip
 venv
 .idea
+1.py
+2.py
+client.py
+getSpiral.py
+screenOfVend.py
+светодиод.py
