@@ -1,10 +1,16 @@
+from save_loader import SL_functions
 
-class reserved_data():
-    def __int__(self, product_id, user_code):
-        self.Id = product_id
-        self.Code = user_code
 
-class product():
-    def __int__(self, product_id, coil_number):
-        self.Id = product_id
-        self.Coil = coil_number
+class reserved_data(SL_functions):
+    def __int__(self, file, **param):
+        self.file = file
+        self.Params = param
+        self.Id = param['product_id']
+        self.Code = param['user_code']
+
+class product(SL_functions):
+    def __int__(self, file, **param):
+        self.file = file
+        self.Params = param
+        self.Id = param['product_id']
+        self.Coil = param['coil_number']

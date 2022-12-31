@@ -1,3 +1,3 @@
 import git
-repo = git.Repo("<the file directory of your local gihub repo>")
+repo = git.Repo("https://github.com/vladisloveK/Raspi")
 repo.remotes.origin.pull()

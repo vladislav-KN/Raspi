@@ -1,6 +1,5 @@
-import paho.mqtt.client as mqtt
-import pickle
+import machine
+s = machine.unique_id()
+for b in s:
+    print(hex(b)[2:],end=" ")
 
-
-mqttc = mqtt.Client(client_id="", clean_session=True, userdata=None, protocol=mqtt.MQTTv311, transport="tcp")
-mqttc.connect(host, port=1883, keepalive=60, bind_address="")
