@@ -6,7 +6,7 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>1082</width>
+    <width>1075</width>
     <height>827</height>
    </rect>
   </property>
@@ -40,8 +40,8 @@ background-color: rgb(47, 66, 115);</string>
        <property name="geometry">
         <rect>
          <x>0</x>
-         <y>-385</y>
-         <width>1045</width>
+         <y>0</y>
+         <width>1038</width>
          <height>1151</height>
         </rect>
        </property>
@@ -490,7 +490,7 @@ background-color: rgb(47, 66, 115);</string>
             <property name="frameShadow">
              <enum>QFrame::Raised</enum>
             </property>
-            <widget class="QWidget" name="">
+            <widget class="QWidget" name="layoutWidget">
              <property name="geometry">
               <rect>
                <x>10</x>
@@ -1327,7 +1327,7 @@ background-color: rgb(47, 66, 115);</string>
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>1082</width>
+     <width>1075</width>
      <height>21</height>
     </rect>
    </property>

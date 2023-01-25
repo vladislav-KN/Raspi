@@ -9,4 +9,5 @@ client.py
 getSpiral.py
 screenOfVend.py
 светодиод.py
-settings
+Settings/settings
+/Settings/wifi

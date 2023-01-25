@@ -30,19 +30,15 @@ class DetectorAPI:
         self.detection_boxes = self.detection_graph.get_tensor_by_name('detection_boxes:0')
         # Each score represent how level of confidence for each of the objects.
         # Score is shown on the result image, together with the class label.
-        self.detection_scores = self.detection_graph.get_tensor_by_name('detection_scores:0')
-        self.detection_classes = self.detection_graph.get_tensor_by_name('detection_classes:0')
-        self.num_detections = self.detection_graph.get_tensor_by_name('num_detections:0')
+
 
     def processFrame(self, image):
         # Expand dimensions since the trained_model expects images to have shape: [1, None, None, 3]
         image_np_expanded = np.expand_dims(image, axis=0)
         # Actual detection.
         start_time = time.time()
-        (boxes, scores, classes, num) = self.sess.run(
-            [self.detection_boxes, self.detection_scores,
-                self.detection_classes, self.num_detections],
-            feed_dict={self.image_tensor: image_np_expanded})
+        boxes = self.sess.run(
+            [self.detection_boxes])
         end_time = time.time()
 
         # print("Elapsed Time:", end_time-start_time)
@@ -53,7 +49,7 @@ class DetectorAPI:
         for i in range(boxes.shape[1]):
             boxes_list[i] = (int(boxes[0, i, 0] * im_height),int(boxes[0, i, 1]*im_width),int(boxes[0, i, 2] * im_height),int(boxes[0, i, 3]*im_width))
 
-        return boxes_list, scores[0].tolist(), [int(x) for x in classes[0].tolist()], int(num[0])
+        return boxes_list
 
     def close(self):
         self.sess.close()
