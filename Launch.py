@@ -2,6 +2,7 @@ import json
 import subprocess
 import threading
 import time
+from multiprocessing import Process
 from threading import Thread
 import urllib.request
 
@@ -71,11 +72,11 @@ class raspberry_pi_start_up:
         self.threads.append(Thread(target=self.check_update))
         self.threads[len(self.threads) - 1].start()
         #Update Interface
-        self.threads.append(Thread(target=self.updator))
-        self.threads[len(self.threads) - 1].start()
+        self.pyqt = Process(target=self.updator)
+        self.pyqt.run()
         #
-        self.threads.append(Thread(target=self.cam_reader))
-        self.threads[len(self.threads) - 1].start()
+        self.cv = Process(target=self.cam_reader)
+        self.cv.run()
                 # if first start
 
 
@@ -148,9 +149,7 @@ class raspberry_pi_start_up:
 
     def updator(self):
         while(True):
-            new_thread = Thread(target=self.interface_loader())
-            new_thread.start()
-            new_thread.join()
+            self.interface_loader()
 
     def interface_loader(self):
         app = QApplication([])
