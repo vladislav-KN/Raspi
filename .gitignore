@@ -11,3 +11,4 @@ screenOfVend.py
 светодиод.py
 Settings/settings
 /Settings/wifi
+.env

@@ -17,7 +17,7 @@ class brocker:
         else:
             send = mqtt_data(id, data)
             return self.client.publish(f"rasp/{topic}", f"{send.to_json()}")
-    def on_disconnect(client, userdata, rc):
+    def on_disconnect(client, mosq, obj, rc):
         print("client disconnected ok")
     def on_publish(self, client, userdata, result):  # create function for callback
         print("data published \n")

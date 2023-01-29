@@ -8,6 +8,10 @@ from threading import Thread
 from PyQt5.QtCore import *
 from PyQt5.QtGui import *
 from PyQt5.QtWidgets import *
+
+from Settings.save_loader import SL_functions
+
+
 class Element(QWidget):
    def __init__(self, cost = "50 рублей", name = "Водичка", file = "1", parent = None):
       super(Element, self).__init__(parent)
@@ -82,9 +86,9 @@ class MainWindow(QWidget):
       self.maxid_w = self.width()//250 - 1
 
 
-   def load(self):
-      for _ in range(25):
-         self.addElmToGrid(Element())
+   def load(self,file):
+      for item in SL_functions(file).load_from_file()["elem"]:
+         self.addElmToGrid(Element(file=item["folder"], name=item["name"], cost=item["price"]))
          self.update()
          QApplication.processEvents()
 
