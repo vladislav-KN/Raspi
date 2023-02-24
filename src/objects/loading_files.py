@@ -1,0 +1,42 @@
+import os
+from typing import Optional
+
+import qrcode
+import requests
+from pydantic import BaseModel
+
+
+class WiFi(BaseModel):
+    ssid: str
+    password: str
+
+
+class Settings(BaseModel):
+    mqtt_host: str
+    mqtt_port: int
+    rest_host: str
+    wifi: Optional[list[WiFi]]
+
+    def get_wifi_pass(self, ssid: str) -> str:
+        for wifi in self.wifi:
+            if wifi.ssid == ssid:
+                return wifi.password
+        return ""
+
+
+class Data(BaseModel):
+    png: str
+    name: str
+    price: str
+    link: str
+
+    def create_img(self, file_name: str | int) -> None:
+        if not os.path.exists(f"Res/imgs/{file_name}"):
+            os.makedirs(f"Res/imgs/{file_name}")
+        if self.link:
+            img = qrcode.make(self.link)
+            img.save(f"Res/imgs/{file_name}/qr.png")
+        if self.png:
+            img_data = requests.get(self.png).content
+            with open(f'Res/imgs/{file_name}/img.png', 'wb') as handler:
+                handler.write(img_data)
