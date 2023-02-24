@@ -6,7 +6,7 @@ import requests
 from pyzbar import pyzbar
 from src.objects.cpture_data import ProductDO
 from motor import Motors
-from src.controlls.task_controllers.mqtt_task import Broker
+
 from settings.settings import REQUEST_ORDERS
 
 
@@ -22,7 +22,7 @@ class CamCapture:
         while True:
             # Read current frame
             ret, frame = self.camera.read()
-            self.decodeCam(frame)
+            self.decode_cam(frame)
 
     def decode_cam(self, image) -> None:
         gray = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
@@ -32,21 +32,26 @@ class CamCapture:
             barcodeData = barcode.data.decode()
             barcodeType = barcode.type
             print("[" + str(datetime.now()) + "] Type:{} | Data: {}".format(barcodeType, barcodeData))
-            self.Check(barcodeData)
+            self.check(barcodeData)
 
     def check(self, barcode_data: str):
+        no_data = True
         for product in self.product_list:
-            if barcode_data == product.Key:
-                Motors.rotate_list(product.LineNumber)
-                self.mqtt.send_data(product.Key)
-
+            if barcode_data == product.key:
+                Motors.rotate_list(product.line_number)
+                self.mqtt.send_data(product.key)
+                product.delete_from_file(barcode_data)
+                no_data = False
                 break
-            else:
-                try:
-                    load = json.loads(requests.request('GET', REQUEST_ORDERS + f"/order&{barcode_data}").text)
-                    Motors.rotate_list(load["orders"])
+        if no_data:
+            try:
+                req = requests.request('GET', REQUEST_ORDERS + f"/order&{barcode_data}")
+                if req.status_code < 300:
+                    load = json.loads(req.text)["orders"]
+                    data = ProductDO(key=barcode_data, line_number=load)
+                    data.add_to_file()
+                    Motors.rotate_list(load)
                     self.mqtt.send_data(barcode_data)
-                    break
-                except:
-
-                    pass
+                    data.delete_from_file(barcode_data)
+            except:
+                pass

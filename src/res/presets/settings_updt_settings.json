@@ -1,0 +1,10 @@
+{
+  "to": "url",
+  "updt": "updt",
+  "controller": "settings",
+  "file": "/settings/settings.json",
+  "sleep_if_exist": 500,
+  "sleep_if_not_exist": 200,
+  "sleep_if_not_updt": 200,
+  "sleep_if_err": 100
+}

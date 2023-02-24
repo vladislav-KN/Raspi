@@ -1,0 +1,10 @@
+{
+  "to": "url",
+  "updt": "updt",
+  "controller": "orders",
+  "file": "/src/res/data/orders.json",
+  "sleep_if_exist": 5,
+  "sleep_if_not_exist": 2,
+  "sleep_if_not_updt": 2,
+  "sleep_if_err": 1
+}
