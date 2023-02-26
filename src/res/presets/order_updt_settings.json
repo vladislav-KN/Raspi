@@ -6,5 +6,5 @@
   "sleep_if_exist": 5,
   "sleep_if_not_exist": 2,
   "sleep_if_not_updt": 2,
-  "sleep_if_err": 1
+  "sleep_if_err": 10
 }

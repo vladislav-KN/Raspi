@@ -10,7 +10,7 @@ from src.controlls.save_loader import SaveLoad
 
 class Updator:
 
-    def __init__(self, dict_param: dict, edited: bool):
+    def __init__(self, dict_param: dict, edited: bool = False):
         self.param = dict_param
         self.edited = edited
 
@@ -32,6 +32,7 @@ class Updator:
                     else:
                         time.sleep(self.param["sleep_if_not_updt"])
             except:
+
                 time.sleep(self.param["sleep_if_err"])
     @staticmethod
     def save_updates(file: str, data) -> None:

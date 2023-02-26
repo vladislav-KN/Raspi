@@ -1,3 +1,4 @@
+import time
 from threading import Lock
 
 from settings.settings import ORDERS_DATA
@@ -23,3 +24,4 @@ class OrderTask:
                 self.data = self.save_load_data.load_from_file()
                 self.order_upd.edited = False
                 self.lock.release()
+            time.sleep(5)

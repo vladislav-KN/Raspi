@@ -8,11 +8,11 @@ class SaveLoad:
         self.file = file
 
     def load_from_file(self):
-        with open(self.file, 'rb') as j:
+        with open(os.getcwd()+self.file, 'r') as j:
             return json.loads(j.read())
 
     def save_to_file(self, data):
-        with open(self.file, 'wb') as f:
+        with open(os.getcwd()+self.file, 'wb') as f:
             json.dump(data.__dict__, f)
 
     def enshure_file_created(self):

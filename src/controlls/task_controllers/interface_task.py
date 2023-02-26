@@ -1,9 +1,8 @@
 import json
-import os
 import time
 from threading import Thread, Lock
 
-from PyQt5.QtWidgets import QApplication
+from PyQt5.QtWidgets import *
 
 from settings.settings import LOAD_GUI, GUI_NAME, DATA_FOR_GUI
 from src.controlls.save_loader import SaveLoad
@@ -16,21 +15,21 @@ class InterfaceInit:
     close: bool
     lock: Lock
     gu: Updator
+
     def __init__(self, lk: Lock, gu: Updator):
         self.close = False
         self.lock = lk
         self.gui_upd = gu
         self.save_load_data = SaveLoad(DATA_FOR_GUI)
-
+        self.threads = []
     def interface_loader(self):
         app = QApplication([])
         ex = MainWindow()
         ex.load(LOAD_GUI)
-
         def closer():
             ex.scrole()
             while not self.close:
-                time.sleep(1)
+                time.sleep(5)
             app.exit()
             self.lock.acquire()
             self.close = False
@@ -57,7 +56,12 @@ class InterfaceInit:
                 self.close = True
                 self.gui_upd.edited = False
                 self.lock.release()
-
+            time.sleep(5)
     def updator(self):
-        while (True):
+        self.threads.append(Thread(target=self.interface_updator))
+        self.threads[len(self.threads) - 1].start()
+        self.threads.append(Thread(target=self.gui_upd.check_update))
+        self.threads[len(self.threads) - 1].start()
+        while True:
             self.interface_loader()
+

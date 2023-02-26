@@ -2,6 +2,8 @@ import os
 import time
 from typing import Optional
 import numpy as np
+
+from src.controlls.task_controllers.settings_task import SettingsTask
 from src.objects.loading_files import WiFi
 import urllib.request
 from wifi import Cell
@@ -10,11 +12,11 @@ import subprocess
 
 class WifiTask:
     host_checker: str
-    wifi_list: Optional[list[WiFi]]
+    settings: SettingsTask
 
-    def __init__(self, wifi: Optional[list[WiFi]], htc='https://google.com'):
+    def __init__(self, set: SettingsTask, htc='https://google.com'):
         self.host_checker = htc
-        self.wifi_list = wifi
+        self.settings = set
 
     def connect(self):
         try:
@@ -33,7 +35,7 @@ class WifiTask:
 
         while (True):
             print("awake")
-            if not self.connect():
+            if self.connect():
                 time.sleep(5)
                 continue
             dtype = [("sig", int), ("qua", float), ("frq", float), ("ssid", 'S33')]
@@ -45,7 +47,7 @@ class WifiTask:
             print(wifis["ssid"])
             for ssid in wifis["ssid"]:
                 print(ssid.decode("utf-8"))
-                for wifi in self.wifi_list:
+                for wifi in self.settings.data.wifi:
                     if ssid.decode("utf-8") == wifi.ssid:
                         os.system(
                             f'nmcli d wifi connect "{ssid.decode("utf-8")}" password {wifi.password}')

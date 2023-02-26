@@ -9,4 +9,4 @@ python-dotenv==0.21.1
 qrcode==7.3.1
 PyQt5==5.15.7
 wifi==0.3.8
-tensorflow==2.11.0
+pydantic~=1.10.4

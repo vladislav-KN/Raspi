@@ -4,25 +4,30 @@ from datetime import datetime
 import cv2
 import requests
 from pyzbar import pyzbar
+
+#from src.controlls.device_contolls.motor import Motors
+from src.controlls.task_controllers.mqtt_task import MQTTBroker
+from src.controlls.task_controllers.orders_task import OrderTask
 from src.objects.cpture_data import ProductDO
-from motor import Motors
+
 
 from settings.settings import REQUEST_ORDERS
 
 
 class CamCapture:
-    product_list: list[ProductDO]
+    orders: OrderTask
 
-    def __init__(self, client: Broker, data: list[ProductDO]) -> None:
-        self.camera = cv2.VideoCapture(0)
-        self.product_list = data
+    def __init__(self, cam, client: MQTTBroker, data: OrderTask) -> None:
+        self.camera = cam
+        self.orders = data
         self.mqtt = client
 
     def cam_reader(self) -> None:
+
         while True:
             # Read current frame
             ret, frame = self.camera.read()
-            self.decode_cam(frame)
+            im = self.decode_cam(frame)
 
     def decode_cam(self, image) -> None:
         gray = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
@@ -36,10 +41,10 @@ class CamCapture:
 
     def check(self, barcode_data: str):
         no_data = True
-        for product in self.product_list:
+        for product in self.orders.data:
             if barcode_data == product.key:
-                Motors.rotate_list(product.line_number)
-                self.mqtt.send_data(product.key)
+                #Motors.rotate_list(product.line_number)
+                self.mqtt.send_data(product.key, "order")
                 product.delete_from_file(barcode_data)
                 no_data = False
                 break
@@ -50,8 +55,8 @@ class CamCapture:
                     load = json.loads(req.text)["orders"]
                     data = ProductDO(key=barcode_data, line_number=load)
                     data.add_to_file()
-                    Motors.rotate_list(load)
-                    self.mqtt.send_data(barcode_data)
+                    #Motors.rotate_list(load)
+                    self.mqtt.send_data(barcode_data, "order")
                     data.delete_from_file(barcode_data)
             except:
                 pass

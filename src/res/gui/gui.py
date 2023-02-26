@@ -5,7 +5,7 @@ from threading import Thread
 from PyQt5.QtCore import *
 from PyQt5.QtWidgets import *
 
-from settings.settings import SL_functions
+from src.controlls.save_loader import SaveLoad
 
 
 class Element(QWidget):
@@ -36,7 +36,7 @@ class Element(QWidget):
         self.frame_qr = QFrame(self.frmMain)
         self.frame_qr.setMinimumSize(QSize(123, 123))
         self.frame_qr.setMaximumSize(QSize(123, 123))
-        self.frame_qr.setStyleSheet(f"image: url(res/imgs/{file}/qr.png);")
+        self.frame_qr.setStyleSheet(f"image: url(src/res/imgs/{file}/qr.png);")
         self.frame_qr.setFrameShape(QFrame.StyledPanel)
         self.frame_qr.setFrameShadow(QFrame.Raised)
         self.frame_qr.setObjectName("frame_qr")
@@ -46,7 +46,7 @@ class Element(QWidget):
         self.frame_img.setMaximumSize(QSize(200, 200))
         self.frame_img.setContextMenuPolicy(Qt.CustomContextMenu)
         self.frame_img.setToolTipDuration(-1)
-        self.frame_img.setStyleSheet(f"image: url(res/imgs/{file}/img.png);")
+        self.frame_img.setStyleSheet(f"image: url(src/res/imgs/{file}/img.png);")
         self.frame_img.setFrameShape(QFrame.StyledPanel)
         self.frame_img.setFrameShadow(QFrame.Raised)
         self.frame_img.setObjectName("frame_img")
@@ -86,7 +86,7 @@ class MainWindow(QWidget):
         self.update()
         QApplication.processEvents()
         self.maxid_w = self.width() // 250 - 1
-        for item in SL_functions(file).load_from_file()["elem"]:
+        for item in SaveLoad(file).load_from_file()["elem"]:
             self.addElmToGrid(Element(file=item["folder"], name=item["name"], cost=item["price"]))
             self.update()
             QApplication.processEvents()
@@ -126,7 +126,7 @@ class MainWindow(QWidget):
 def main():
     app = QApplication([])
     ex = MainWindow()
-    ex.load("res/data/gui.json")
+    ex.load("../data/gui.json")
     def func():
         ex.scrole()
         while (True):

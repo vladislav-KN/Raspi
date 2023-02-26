@@ -1,80 +1,71 @@
-import json
-
-import threading
-import time
 from multiprocessing import Process
-from threading import Thread
+from threading import Lock, Thread
 
-
-from PyQt5.QtWidgets import QApplication
+import cv2
 # from RPi import GPIO
 from dotenv import load_dotenv
 
-from datetime import datetime
-
 from src.controlls.device_contolls.cam import CamCapture
 from src.controlls.save_loader import SaveLoad
+from src.controlls.task_controllers.interface_task import InterfaceInit
+from src.controlls.task_controllers.mqtt_task import MQTTBroker
+from src.controlls.task_controllers.orders_task import OrderTask
+from src.controlls.task_controllers.settings_task import SettingsTask
 from src.controlls.task_controllers.update_task import Updator
 
-from src.objects.loading_files import Settings, WiFi, Data
-from src.res.gui.gui import MainWindow
-
-from settings.settings import SETTINGS_PATH, DATA_FOR_GUI, LOAD_GUI, GUI_NAME
-
+from settings.settings import *
+from src.controlls.task_controllers.wifi_task import WifiTask
+from src.objects.loading_files import Settings, WiFi
 
 load_dotenv()
 
+
 class RaspberryPiStartUp:
     def __init__(self):
-        sl = SaveLoad(GUI_UPDT)
-        self.close = False
-        self.last_updated = datetime.now()
-        self.cam_capture = CamCapture()
-        self.gui_upd = Updator(GUI_NAME)
-        # Load settings
-
-
+        sl = SaveLoad(SETTINGS_PATH)
         data = sl.load_from_file()
+        self.lock = Lock()
         self.settings = Settings(mqtt_host=data["mqtt_host"],
                                  mqtt_port=data["mqtt_port"],
                                  rest_host=data["rest_host"],
                                  wifi=[WiFi(ssid=x["ssid"], password=x["ssid"]) for x in data["wifi"]])
-
-        # Start background wifi reconnection from the wifi list
+        sl.file = SETTINGS_UPDT
+        self.set_updt = Updator(sl.load_from_file())
+        self.set_task = SettingsTask(self.lock,self.set_updt, self.settings)
         self.threads = []
-        self.threads.append(Thread(target=self.wifi_connect))
+        self.threads.append(Thread(target=self.set_task.settings_updator))
         self.threads[len(self.threads) - 1].start()
-        # mqtt_contolls PING
-        self.MQTT = Broker(self.settings.mqtt_host, self.settings.mqtt_port)
-        self.threads.append(Thread(target=self.mqtt_ping))
+        self.threads.append(Thread(target=self.set_updt.check_update))
         self.threads[len(self.threads) - 1].start()
-        # Check update
-        self.threads.append(Thread(target=self.check_update))
+
+        self.wifi_task = WifiTask(self.set_task)
+        self.threads.append(Thread(target=self.wifi_task.wifi_connect))
         self.threads[len(self.threads) - 1].start()
-        # Update Interface
-        self.pyqt = Process(target=self.updator)
+
+        sl.file = ORDER_UPDT
+        self.ord_updt = Updator(sl.load_from_file())
+        self.ord_task = OrderTask(self.lock, self.ord_updt)
+        self.threads.append(Thread(target=self.ord_task.order_updator))
+        self.threads[len(self.threads) - 1].start()
+        self.threads.append(Thread(target=self.ord_updt.check_update))
+        self.threads[len(self.threads) - 1].start()
+
+        self.mqtt = MQTTBroker(self.set_task)
+        self.threads.append(Thread(target=self.mqtt.mqtt_ping))
+        self.threads[len(self.threads) - 1].start()
+
+
+
+        sl.file = GUI_UPDT
+        self.gui_upd = Updator(sl.load_from_file())
+        self.gui_init = InterfaceInit(self.lock, self.gui_upd)
+        self.pyqt = Process(target=self.gui_init.updator)
+
+        self.camera = cv2.VideoCapture(0)
+        self.cam_task = CamCapture(self.camera, self.mqtt, self.ord_task)
+        self.cam = Thread(target=self.cam_task.cam_reader)
+        self.cam.start()
         self.pyqt.run()
-        #
-        self.threads.append(Thread(target=self.cam_reader))
-        self.threads[len(self.threads) - 1].start()
-        # if first start
-
-        # Load Interface
-
-        # Load Interface data
-        # Ads
-        # Product data
-        # start ping mqtt_contolls
-
-        # If not conected after start
-        # load saved data
-
-        # Load Interface data
-
-        # Louch qr code reader
-
-
-
 
 
 

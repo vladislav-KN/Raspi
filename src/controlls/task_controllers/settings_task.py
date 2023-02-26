@@ -1,3 +1,4 @@
+import time
 from threading import Lock
 
 from settings.settings import SETTINGS_PATH
@@ -21,3 +22,4 @@ class SettingsTask:
                 self.data = Settings(**self.save_load_data.load_from_file())
                 self.settings_upd.edited = False
                 self.lock.release()
+            time.sleep(5)
