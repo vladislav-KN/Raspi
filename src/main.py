@@ -1,3 +1,4 @@
+import platform
 import sys
 from multiprocessing import Process
 from threading import Lock, Thread
@@ -68,4 +69,9 @@ class RaspberryPiStartUp:
 
 
 if __name__ == '__main__':
+    try:
+        platform.linux_distribution()
+        os.environ.update({ "QT_QPA_PLATFORM_PLUGIN_PATH": "/usr/lib/aarch64-linux-gnu/qt5/plugins/xcbglintegrations/libqxcb-glx-integration.so"})
+    except:
+        ...
     RaspberryPiStartUp()
