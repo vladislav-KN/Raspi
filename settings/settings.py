@@ -20,7 +20,7 @@ def get_serial() -> str:
 
 SETTINGS_PATH: str = os.getenv("SETTINGS_PATH", "/settings/settings.json")
 DATA_FOR_GUI: str = os.getenv("DATA_FOR_GUI", "/src/res/data/data.json")
-LOAD_GUI: str = os.getenv("LOAD_GUI", "../src/res/data/gui.json")
+LOAD_GUI: str = os.getenv("LOAD_GUI", "/src/res/data/gui.json")
 ORDERS_DATA: str = os.getenv("ORDERS_DATA", "/src/res/data/order.json")
 
 CHECK_CONNECTION: str = os.getenv("CHECK_CONNECTION", "https://google.com")
