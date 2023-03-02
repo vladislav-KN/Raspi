@@ -5,6 +5,7 @@ from threading import Thread
 from PyQt5.QtCore import *
 from PyQt5.QtWidgets import *
 
+from settings.settings import NUM_ELEM
 from src.controlls.save_loader import SaveLoad
 
 
@@ -77,25 +78,24 @@ class MainWindow(QWidget):
         self.gridLayout_3.addLayout(self.gridLayout, 0, 0, 1, 1)
         self.scrollArea.setWidget(self.scrollAreaWidgetContents)
         self.horizontalLayout.addWidget(self.scrollArea)
-        self.vscrollbar = self.scrollArea.verticalScrollBar()
+        self.scroll_bar = self.scrollArea.verticalScrollBar()
         self.showFullScreen()
-        self.curid = (0, 0)
-        self.maxid_w = 0
+        self.cur_id = (0, 0)
+        self.max_idw = NUM_ELEM
 
     def load(self, file):
         self.update()
         QApplication.processEvents()
-        self.maxid_w = self.width() // 250 - 1
         for item in SaveLoad(file).load_from_file()["elem"]:
             self.addElmToGrid(Element(file=item["folder"], name=item["name"], cost=item["price"]))
             self.update()
             QApplication.processEvents()
 
     def addElmToGrid(self, elem):
-        if self.curid[1] == self.maxid_w:
-            self.curid = (self.curid[0] + 1, 0)
-        self.gridLayout.addWidget(elem, self.curid[0], self.curid[1], 1, 1)
-        self.curid = (self.curid[0], self.curid[1] + 1)
+        if self.cur_id[1] == self.max_idw:
+            self.cur_id = (self.cur_id[0] + 1, 0)
+        self.gridLayout.addWidget(elem, self.cur_id[0], self.cur_id[1], 1, 1)
+        self.cur_id = (self.cur_id[0], self.cur_id[1] + 1)
 
     def scrole(self):
         while True:
@@ -104,42 +104,24 @@ class MainWindow(QWidget):
                 for i in range(1, self.gridLayout.rowCount()):
                     self.animate((i - 1) * 384, i * 384, 5, 5)
                 for i in range(self.gridLayout.rowCount(), 0, -1):
-                    self.animate(i * 384, (i-1) * 384, -5, 3)
+                    self.animate(i * 384, (i - 1) * 384, -5, 3)
             except:
                 break
 
     def animate(self, _from: int, _to: int, step=1, pause=5.0):
         if step == 0: return
-        if (step > 0):
-            x = lambda a, b: a <= b
+        if step > 0:
+            funct = lambda a, b: a <= b
         else:
-            x = lambda a, b: a >= b
+            funct = lambda a, b: a >= b
 
-        while (x(_from, _to)):
-            self.vscrollbar.setValue(_from)
+        while funct(_from, _to):
+            self.scroll_bar.setValue(_from)
             _from += step
             time.sleep(1 / 60)
         time.sleep(pause)
 
 
-def main():
-    app = QApplication([])
-    ex = MainWindow()
-    ex.load("../data/gui.json")
-    def func():
-        ex.scrole()
-        while (True):
-            if os.path.exists("close"):
-                app.exit()
-                os.remove("close")
-                break
-
-    t = Thread(target=func)
-    t.start()
-    app.exec()
-    return
 
 
-if __name__ == '__main__':
-    proc = Thread(target=main)
-    proc.start()
+

@@ -1,8 +1,10 @@
 import os
-
+from screeninfo import get_monitors
 from dotenv import load_dotenv
 
 load_dotenv()
+
+
 def get_serial() -> str:
     # Extract serial from cpuinfo file
     cpu_serial = "0000000000000000"
@@ -16,6 +18,13 @@ def get_serial() -> str:
         cpu_serial = "ERROR000000000"
     finally:
         return cpu_serial
+
+
+def get_number_of_elem() -> int:
+    for m in get_monitors():
+        if m.is_primary:
+            return m.width // 250 - 1
+    return 0
 
 
 SETTINGS_PATH: str = os.getenv("SETTINGS_PATH", "/settings/settings.json")
@@ -35,3 +44,4 @@ REQUEST_GUI: str = os.getenv("REQUEST_GUI", "")
 REQUEST_ORDERS: str = os.getenv("REQUEST_ORDERS", "")
 
 ID_RASPI: str = get_serial()
+NUM_ELEM: int = get_number_of_elem()
