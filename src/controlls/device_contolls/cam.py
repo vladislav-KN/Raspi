@@ -5,7 +5,7 @@ import cv2
 import requests
 from pyzbar import pyzbar
 
-#from src.controlls.device_contolls.motor import Motors
+from src.controlls.device_contolls.motor import Motors
 from src.controlls.task_controllers.mqtt_task import MQTTBroker
 from src.controlls.task_controllers.orders_task import OrderTask
 from src.objects.cpture_data import ProductDO
@@ -43,7 +43,7 @@ class CamCapture:
         no_data = True
         for product in self.orders.data:
             if barcode_data == product.key:
-                #Motors.rotate_list(product.line_number)
+                Motors.rotate_list(product.line_number)
                 self.mqtt.send_data(product.key, "order")
                 product.delete_from_file(barcode_data)
                 no_data = False
@@ -55,7 +55,7 @@ class CamCapture:
                     load = json.loads(req.text)["orders"]
                     data = ProductDO(key=barcode_data, line_number=load)
                     data.add_to_file()
-                    #Motors.rotate_list(load)
+                    Motors.rotate_list(load)
                     self.mqtt.send_data(barcode_data, "order")
                     data.delete_from_file(barcode_data)
             except:

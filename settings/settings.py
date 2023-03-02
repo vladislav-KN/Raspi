@@ -22,7 +22,7 @@ def get_serial() -> str:
 
 def get_number_of_elem() -> int:
     for m in get_monitors():
-        if m.is_primary:
+        if m.is_primary or m.name == "default":
             return m.width // 250 - 1
     return 0
 
