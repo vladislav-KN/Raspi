@@ -1,3 +1,4 @@
+import sys
 from multiprocessing import Process
 from threading import Lock, Thread
 
@@ -31,7 +32,7 @@ class RaspberryPiStartUp:
                                  wifi=[WiFi(ssid=x["ssid"], password=x["ssid"]) for x in data["wifi"]])
         sl.file = SETTINGS_UPDT
         self.set_updt = Updator(sl.load_from_file())
-        self.set_task = SettingsTask(self.lock,self.set_updt, self.settings)
+        self.set_task = SettingsTask(self.lock, self.set_updt, self.settings)
         self.threads = []
         self.threads.append(Thread(target=self.set_task.settings_updator))
         self.threads[len(self.threads) - 1].start()
@@ -54,8 +55,6 @@ class RaspberryPiStartUp:
         self.threads.append(Thread(target=self.mqtt.mqtt_ping))
         self.threads[len(self.threads) - 1].start()
 
-
-
         sl.file = GUI_UPDT
         self.gui_upd = Updator(sl.load_from_file())
         self.gui_init = InterfaceInit(self.lock, self.gui_upd)
@@ -66,7 +65,6 @@ class RaspberryPiStartUp:
         self.cam = Thread(target=self.cam_task.cam_reader)
         self.cam.start()
         self.pyqt.run()
-
 
 
 if __name__ == '__main__':

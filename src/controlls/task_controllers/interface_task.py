@@ -1,4 +1,5 @@
 import json
+import os
 import time
 from threading import Thread, Lock
 
@@ -20,8 +21,13 @@ class InterfaceInit:
         self.close = False
         self.lock = lk
         self.gui_upd = gu
+        self.gui_upd.edited = True
         self.save_load_data = SaveLoad(DATA_FOR_GUI)
         self.threads = []
+        self.threads.append(Thread(target=self.interface_updator))
+        self.threads[len(self.threads) - 1].start()
+        self.threads.append(Thread(target=self.gui_upd.check_update))
+        self.threads[len(self.threads) - 1].start()
     def interface_loader(self):
         app = QApplication([])
         ex = MainWindow()
@@ -30,7 +36,10 @@ class InterfaceInit:
             ex.scrole()
             while not self.close:
                 time.sleep(5)
-            app.exit()
+            try:
+                app.exit()
+            except:
+                time.sleep(1)
             self.lock.acquire()
             self.close = False
             self.lock.release()
@@ -38,30 +47,28 @@ class InterfaceInit:
         t = Thread(target=closer)
         t.start()
         app.exec()
-        t.join()
+        self.close = True
         return
 
+    def update_file(self):
+        new_dict = {"elem":[]}
+        for item, i in zip(self.save_load_data.load_from_file()[GUI_NAME],
+                           range(len(self.save_load_data.load_from_file()[GUI_NAME]))):
+            d = Data(**item)
+            d.create_img(i)
+            new_dict["elem"].append({"folder": i, "name": d.name, "price": d.price})
+        with open(os.getcwd()+LOAD_GUI, 'w') as f:
+            json.dump(new_dict, f, sort_keys=True, indent=4)
     def interface_updator(self):
         while True:
             if self.gui_upd.edited:
-                new_dict = {}
-                for item, i in zip(self.save_load_data.load_from_file()[GUI_NAME],
-                                   range(len(self.save_load_data.load_from_file()[GUI_NAME]))):
-                    d = Data(**item)
-                    d.create_img(i)
-                    new_dict["elem"].append({"folder": i, "name": d.name, "price": d.price})
-                with open(LOAD_GUI, 'w') as f:
-                    json.dump(new_dict, f, sort_keys=True, indent=4)
+                self.update_file()
                 self.lock.acquire()
                 self.close = True
                 self.gui_upd.edited = False
                 self.lock.release()
             time.sleep(5)
     def updator(self):
-        self.threads.append(Thread(target=self.interface_updator))
-        self.threads[len(self.threads) - 1].start()
-        self.threads.append(Thread(target=self.gui_upd.check_update))
-        self.threads[len(self.threads) - 1].start()
         while True:
             self.interface_loader()
 
