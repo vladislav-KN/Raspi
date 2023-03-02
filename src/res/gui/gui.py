@@ -103,9 +103,8 @@ class MainWindow(QWidget):
                 time.sleep(5)
                 for i in range(1, self.gridLayout.rowCount()):
                     self.animate((i - 1) * 384, i * 384, 5, 5)
-                for i in range(self.gridLayout.rowCount() - 1, 1, -1):
-                    self.animate(i * 384, (i - 1) * 384, -5, 3)
-
+                for i in range(self.gridLayout.rowCount(), 0, -1):
+                    self.animate(i * 384, (i-1) * 384, -5, 3)
             except:
                 break
 
