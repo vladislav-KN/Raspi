@@ -51,6 +51,7 @@ class WifiTask:
                     if ssid.decode("utf-8") == wifi.ssid:
                         os.system(
                             f'nmcli d wifi connect "{ssid.decode("utf-8")}" password {wifi.password}')
+                        time.sleep(10)
                         ps = subprocess.Popen(['iwgetid'], stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
                         try:
                             output = subprocess.check_output(('grep', 'ESSID'), stdin=ps.stdout)

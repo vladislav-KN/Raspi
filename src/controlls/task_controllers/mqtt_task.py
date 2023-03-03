@@ -16,22 +16,29 @@ class MQTTBroker:
         self.client = paho.Client("control1")  # create client object
         self.client.on_publish = self.on_publish  # assign function to callback
         self.client.on_disconnect = self.on_disconnect
-        self.client.connect(self.host,self.port)
-
+        while True:
+            try:
+                self.client.connect(self.host,self.port)
+                break
+            except:
+                time.sleep(10)
     def send_data(self, data="", topic="ping"):
-        if self.host != str(self.settings.data.mqtt_host) or self.port != int(self.settings.data.mqtt_port):
-            self.client.disconnect()
-            self.host = str(self.settings.data.mqtt_host)
-            self.port = int(self.settings.data.mqtt_port)
-            self.client = paho.Client("control1")  # create client object
-            self.client.on_publish = self.on_publish  # assign function to callback
-            self.client.on_disconnect = self.on_disconnect
-            self.client.connect(self.host, self.port)
-        if data == "":
-            return self.client.publish(f"rasp/{topic}", f"{ID_RASPI}")
-        else:
-            send = MqttData(rasp_id=ID_RASPI, code=data)
-            return self.client.publish(f"rasp/{topic}", f"{send.to_json()}")
+        try:
+            if self.host != str(self.settings.data.mqtt_host) or self.port != int(self.settings.data.mqtt_port):
+                self.client.disconnect()
+                self.host = str(self.settings.data.mqtt_host)
+                self.port = int(self.settings.data.mqtt_port)
+                self.client = paho.Client("control1")  # create client object
+                self.client.on_publish = self.on_publish  # assign function to callback
+                self.client.on_disconnect = self.on_disconnect
+                self.client.connect(self.host, self.port)
+            if data == "":
+                return self.client.publish(f"rasp/{topic}", f"{ID_RASPI}")
+            else:
+                send = MqttData(rasp_id=ID_RASPI, code=data)
+                return self.client.publish(f"rasp/{topic}", f"{send.to_json()}")
+        except:
+            ...
 
 
     @staticmethod

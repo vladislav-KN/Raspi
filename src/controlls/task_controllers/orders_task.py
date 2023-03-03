@@ -1,11 +1,10 @@
 import time
 from threading import Lock
 
-from settings.settings import ORDERS_DATA
+from settings.settings import ORDERS_DATA, ORDER_NAME
 from src.controlls.save_loader import SaveLoad
 from src.controlls.task_controllers.update_task import Updator
 from src.objects.cpture_data import ProductDO
-from src.objects.loading_files import Settings
 
 
 class OrderTask:
@@ -21,7 +20,7 @@ class OrderTask:
         while True:
             if self.order_upd.edited:
                 self.lock.acquire()
-                self.data = self.save_load_data.load_from_file()
+                self.data = [ProductDO( key=order["key"] )for order in self.save_load_data.load_from_file()[ORDER_NAME]]
                 self.order_upd.edited = False
                 self.lock.release()
             time.sleep(5)

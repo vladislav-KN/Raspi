@@ -30,7 +30,7 @@ class RaspberryPiStartUp:
         self.settings = Settings(mqtt_host=data["mqtt_host"],
                                  mqtt_port=data["mqtt_port"],
                                  rest_host=data["rest_host"],
-                                 wifi=[WiFi(ssid=x["ssid"], password=x["ssid"]) for x in data["wifi"]])
+                                 wifi=[WiFi(ssid=x["ssid"], password=x["password"]) for x in data["wifi"]])
         sl.file = SETTINGS_UPDT
         self.set_updt = Updator(sl.load_from_file())
         self.set_task = SettingsTask(self.lock, self.set_updt, self.settings)
