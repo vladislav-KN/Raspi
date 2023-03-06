@@ -8,7 +8,7 @@ from settings.settings import ID_RASPI
 from src.controlls.save_loader import SaveLoad
 
 
-class Updator:
+class Updater:
 
     def __init__(self, dict_param: dict, edited: bool = False):
         self.param = dict_param
@@ -24,7 +24,7 @@ class Updator:
                         req = requests.request('GET', self.param["to"] + f"/{self.param['controller']}?id={ID_RASPI}")
                         if req.status_code < 300:
                             data = json.loads(req.text)
-                            Updator.save_updates(self.param["file"], data)
+                            Updater.save_updates(self.param["file"], data)
                             self.edited = True
                             time.sleep(self.param["sleep_if_exist"])
                         else:

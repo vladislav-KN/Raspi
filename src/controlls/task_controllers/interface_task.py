@@ -7,7 +7,7 @@ from PyQt5.QtWidgets import *
 
 from settings.settings import LOAD_GUI, GUI_NAME, DATA_FOR_GUI
 from src.controlls.save_loader import SaveLoad
-from src.controlls.task_controllers.update_task import Updator
+from src.controlls.task_controllers.update_task import Updater
 from src.objects.loading_files import Data
 from src.res.gui.gui import MainWindow
 
@@ -15,9 +15,9 @@ from src.res.gui.gui import MainWindow
 class InterfaceInit:
     close: bool
     lock: Lock
-    gu: Updator
+    gu: Updater
 
-    def __init__(self, lk: Lock, gu: Updator):
+    def __init__(self, lk: Lock, gu: Updater):
         self.close = False
         self.lock = lk
         self.gui_upd = gu

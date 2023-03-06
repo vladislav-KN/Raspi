@@ -13,7 +13,7 @@ from src.controlls.task_controllers.interface_task import InterfaceInit
 from src.controlls.task_controllers.mqtt_task import MQTTBroker
 from src.controlls.task_controllers.orders_task import OrderTask
 from src.controlls.task_controllers.settings_task import SettingsTask
-from src.controlls.task_controllers.update_task import Updator
+from src.controlls.task_controllers.update_task import Updater
 
 from settings.settings import *
 from src.controlls.task_controllers.wifi_task import WifiTask
@@ -32,7 +32,7 @@ class RaspberryPiStartUp:
                                  rest_host=data["rest_host"],
                                  wifi=[WiFi(ssid=x["ssid"], password=x["password"]) for x in data["wifi"]])
         sl.file = SETTINGS_UPDT
-        self.set_updt = Updator(sl.load_from_file())
+        self.set_updt = Updater(sl.load_from_file())
         self.set_task = SettingsTask(self.lock, self.set_updt, self.settings)
         self.threads = []
         self.threads.append(Thread(target=self.set_task.settings_updator))
@@ -45,7 +45,7 @@ class RaspberryPiStartUp:
         self.threads[len(self.threads) - 1].start()
 
         sl.file = ORDER_UPDT
-        self.ord_updt = Updator(sl.load_from_file())
+        self.ord_updt = Updater(sl.load_from_file())
         self.ord_task = OrderTask(self.lock, self.ord_updt)
         self.threads.append(Thread(target=self.ord_task.order_updator))
         self.threads[len(self.threads) - 1].start()
@@ -57,7 +57,7 @@ class RaspberryPiStartUp:
         self.threads[len(self.threads) - 1].start()
 
         sl.file = GUI_UPDT
-        self.gui_upd = Updator(sl.load_from_file())
+        self.gui_upd = Updater(sl.load_from_file())
         self.gui_init = InterfaceInit(self.lock, self.gui_upd)
         self.pyqt = Process(target=self.gui_init.updator)
 

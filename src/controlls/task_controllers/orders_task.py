@@ -3,14 +3,13 @@ from threading import Lock
 
 from settings.settings import ORDERS_DATA, ORDER_NAME
 from src.controlls.save_loader import SaveLoad
-from src.controlls.task_controllers.update_task import Updator
+from src.controlls.task_controllers.update_task import Updater
 from src.objects.cpture_data import ProductDO
 
 
 class OrderTask:
     data:list[ProductDO]
-    def __init__(self, lk: Lock, ou: Updator):
-        self.close = False
+    def __init__(self, lk: Lock, ou: Updater):
         self.lock = lk
         self.order_upd = ou
         self.data = []

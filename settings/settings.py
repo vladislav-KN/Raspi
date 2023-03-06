@@ -22,15 +22,19 @@ def get_serial() -> str:
 
 
 def get_number_of_elem() -> int:
-    cmd = ['xrandr']
-    cmd2 = ['grep', '*']
-    p = subprocess.Popen(cmd, stdout=subprocess.PIPE)
-    p2 = subprocess.Popen(cmd2, stdin=p.stdout, stdout=subprocess.PIPE)
-    p.stdout.close()
-    resolution_string, junk = p2.communicate()
-    resolution = resolution_string.split()[0]
-    width, height = resolution.decode("utf-8").split('x')
-    return int(width) // 250 - 1
+    try:
+        cmd = ['xrandr']
+        cmd2 = ['grep', '*']
+        p = subprocess.Popen(cmd, stdout=subprocess.PIPE)
+        p2 = subprocess.Popen(cmd2, stdin=p.stdout, stdout=subprocess.PIPE)
+        p.stdout.close()
+        resolution_string, junk = p2.communicate()
+        resolution = resolution_string.split()[0]
+        width, height = resolution.decode("utf-8").split('x')
+
+        return int(width) // 250 - 1
+    except:
+        return 10
 
 
 SETTINGS_PATH: str = os.getenv("SETTINGS_PATH", "/settings/settings.json")
