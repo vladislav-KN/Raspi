@@ -42,6 +42,7 @@ class CamCapture:
     def check(self, barcode_data: str):
         no_data = True
         for product in self.orders.data:
+
             if barcode_data == product.key:
                 Motors.rotate_list(product.line_number)
                 self.mqtt.send_data(product.key, "order")

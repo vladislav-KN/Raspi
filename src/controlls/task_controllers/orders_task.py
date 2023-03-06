@@ -12,6 +12,7 @@ class OrderTask:
     def __init__(self, lk: Lock, ou: Updater):
         self.lock = lk
         self.order_upd = ou
+        self.order_upd.edited = True
         self.data = []
         self.save_load_data = SaveLoad(ORDERS_DATA)
 
@@ -19,7 +20,7 @@ class OrderTask:
         while True:
             if self.order_upd.edited:
                 self.lock.acquire()
-                self.data = [ProductDO( key=order["key"] )for order in self.save_load_data.load_from_file()[ORDER_NAME]]
+                self.data = [ProductDO(key=order["key"], line_number=order["line_number"])for order in self.save_load_data.load_from_file()[ORDER_NAME]]
                 self.order_upd.edited = False
                 self.lock.release()
             time.sleep(5)

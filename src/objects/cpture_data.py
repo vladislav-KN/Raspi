@@ -3,7 +3,7 @@ from typing import Optional
 
 from pydantic import BaseModel
 
-from settings.settings import ORDERS_DATA
+from settings.settings import ORDERS_DATA, ORDER_NAME
 from src.controlls.save_loader import SaveLoad
 
 
@@ -25,7 +25,7 @@ class ProductDO(BaseModel):
         orders = sl.load_from_file()
         orders["order_list"] = [{"key": order.key,
                                  "lineNumber": order.line_number}
-                                for order in orders["order_list"] if not order.key == baracode]
+                                for order in orders[ORDER_NAME] if not order.key == baracode]
         sl.save_to_file(orders)
 
 
