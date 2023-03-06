@@ -13,8 +13,11 @@ class SaveLoad:
             return k
 
     def save_to_file(self, data):
-        with open(os.getcwd()+self.file, 'wb', encoding='utf-8') as f:
-            json.dump(data.__dict__, f)
+        with open(os.getcwd()+self.file, 'w', encoding='utf-8') as f:
+            try:
+                json.dump(data.__dict__, f)
+            except:
+                json.dump(data, f)
 
     def enshure_file_created(self):
         return os.path.isfile(self.file)

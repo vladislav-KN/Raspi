@@ -23,10 +23,11 @@ class ProductDO(BaseModel):
     def delete_from_file(baracode):
         sl = SaveLoad(ORDERS_DATA)
         orders = sl.load_from_file()
-        orders["order_list"] = [{"key": order.key,
-                                 "lineNumber": order.line_number}
-                                for order in orders[ORDER_NAME] if not order.key == baracode]
-        sl.save_to_file(orders)
+        new_file = {ORDER_NAME:[]}
+        for order in orders[ORDER_NAME]:
+            if not order["key"] == baracode:
+                new_file[ORDER_NAME].append(order)
+        sl.save_to_file(new_file)
 
 
 
