@@ -4,7 +4,7 @@ import json
 
 
 class SaveLoad:
-    def __init__(self, file):
+    def __init__(self, file:str):
         self.file = file
 
     def load_from_file(self):

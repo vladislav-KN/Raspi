@@ -41,10 +41,9 @@ class CamCapture:
             print("[" + str(datetime.now()) + "] Type:{} | Data: {}".format(barcodeType, barcodeData))
             self.check(barcodeData)
 
-    def check(self, barcode_data: str):
+    def check(self, barcode_data: str) -> None:
         no_data = True
         for product in self.orders.data:
-
             if barcode_data == product.key:
                 #Motors.rotate_list(product.line_number)
                 time.sleep(30)
@@ -56,7 +55,7 @@ class CamCapture:
                 break
         if no_data:
             try:
-                req = requests.request('GET', REQUEST_ORDERS + f"/order&{barcode_data}")
+                req = requests.request('GET', REQUEST_ORDERS + f"/order/{barcode_data}")
                 if req.status_code < 300:
                     load = json.loads(req.text)["orders"]
                     data = ProductDO(key=barcode_data, line_number=load)

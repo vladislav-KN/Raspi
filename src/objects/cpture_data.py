@@ -15,9 +15,7 @@ class ProductDO(BaseModel):
     def add_to_file(self):
         sl = SaveLoad(ORDERS_DATA)
         orders = sl.load_from_file()
-        orders["order_list"].append(
-            {"key": self.key,
-             "lineNumber": self.line_number})
+        orders[ORDER_NAME].append(self)
         sl.save_to_file(orders)
     @staticmethod
     def delete_from_file(baracode):

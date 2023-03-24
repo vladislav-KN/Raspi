@@ -1,9 +1,9 @@
 {
-  "to": "url",
+  "to": "http://127.0.0.1:8000",
   "updt": "updt",
   "controller": "gui",
   "file": "/src/res/data/gui.json",
-  "sleep_if_exist": 8000,
+  "sleep_if_exist": 30,
   "sleep_if_not_exist": 100,
   "sleep_if_not_updt": 500,
   "sleep_if_err": 100

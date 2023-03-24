@@ -36,17 +36,17 @@ class MQTTBroker:
                 return self.client.publish(f"rasp/{topic}", f"{ID_RASPI}")
             else:
                 send = MqttData(rasp_id=ID_RASPI, code=data)
-                return self.client.publish(f"rasp/{topic}", f"{send.to_json()}")
+                return self.client.publish(f"rasp/{topic}", f"{send.to_json_str()}")
         except:
             ...
 
 
     @staticmethod
-    def on_disconnect(mosq, obj, rc):
-        print("client disconnected ok")
+    def on_disconnect(client, userdata, result):
+        print(result)
     @staticmethod
     def on_publish( client, userdata, result):  # create function for callback
-        print("data published \n")
+        print(result)
         pass
 
     def mqtt_ping(self):

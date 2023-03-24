@@ -20,7 +20,7 @@ class WifiTask:
 
     def connect(self):
         try:
-            urllib.request.urlopen(self.host_checker)  # Python 3.x
+            urllib.request.urlopen(self.host_checker)
             return True
         except:
             return False

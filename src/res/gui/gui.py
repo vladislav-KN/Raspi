@@ -5,7 +5,7 @@ from threading import Thread
 from PyQt5.QtCore import *
 from PyQt5.QtWidgets import *
 
-from settings.settings import NUM_ELEM
+from settings.settings import NUM_ELEM, ICO_IMG
 from src.controlls.save_loader import SaveLoad
 
 
@@ -61,13 +61,17 @@ class Element(QWidget):
 class MainWindow(QWidget):
     def __init__(self, parent=None):
         super(MainWindow, self).__init__(parent)
+
         self.setObjectName("MainWindow")
-        self.setStyleSheet("background-color: rgb(47, 66, 115);")
+
+        self.setStyleSheet(f"background-color: rgb(47, 66, 115);")
         self.horizontalLayout = QHBoxLayout(self)
         self.horizontalLayout.setObjectName("horizontalLayout")
+
         self.scrollArea = QScrollArea(self)
         self.scrollArea.setWidgetResizable(True)
         self.scrollArea.setObjectName("scrollArea")
+
         self.scrollAreaWidgetContents = QWidget()
         self.scrollAreaWidgetContents.setGeometry(QRect(0, 0, 1038, 1151))
         self.scrollAreaWidgetContents.setObjectName("scrollAreaWidgetContents")
@@ -79,7 +83,13 @@ class MainWindow(QWidget):
         self.scrollArea.setWidget(self.scrollAreaWidgetContents)
         self.horizontalLayout.addWidget(self.scrollArea)
         self.scroll_bar = self.scrollArea.verticalScrollBar()
+        self.label_1 = QLabel(self)
+        self.label_1.setStyleSheet(f"background-image: url({ICO_IMG});background-color: rgba(47, 66, 115, 0);")
+        self.label_1.resize(50, 50)
+        self.label_1.move(25, 25)
         self.showFullScreen()
+        #self.setGeometry(0, 0, 1366, 768)
+        #self.show()
         self.cur_id = (0, 0)
         self.max_idw = NUM_ELEM
 
@@ -91,7 +101,7 @@ class MainWindow(QWidget):
             self.update()
             QApplication.processEvents()
 
-    def addElmToGrid(self, elem):
+    def addElmToGrid(self, elem: Element):
         if self.cur_id[1] == self.max_idw:
             self.cur_id = (self.cur_id[0] + 1, 0)
         self.gridLayout.addWidget(elem, self.cur_id[0], self.cur_id[1], 1, 1)

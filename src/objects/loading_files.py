@@ -24,19 +24,19 @@ class Settings(BaseModel):
         return ""
 
 
-class Data(BaseModel):
+class GuiData(BaseModel):
     png: str
     name: str
     price: str
     link: str
 
-    def create_img(self, file_name: int) -> None:
-        if not os.path.exists(os.getcwd()+f"/src/res/imgs/{file_name}"):
-            os.makedirs(os.getcwd()+f"/src/res/imgs/{file_name}")
+    def create_img(self, folder_name: int) -> None:
+        if not os.path.exists(os.getcwd()+f"/src/res/imgs/{folder_name}"):
+            os.makedirs(os.getcwd() +f"/src/res/imgs/{folder_name}")
         if self.link:
             img = qrcode.make(self.link)
-            img.save(os.getcwd()+f"/src/res/imgs/{file_name}/qr.png")
+            img.save(os.getcwd() +f"/src/res/imgs/{folder_name}/qr.png")
         if self.png:
             img_data = requests.get(self.png).content
-            with open(os.getcwd()+f'/src/res/imgs/{file_name}/img.png', 'wb') as handler:
+            with open(os.getcwd()+f'/src/res/imgs/{folder_name}/img.png', 'wb') as handler:
                 handler.write(img_data)

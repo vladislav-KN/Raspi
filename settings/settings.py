@@ -34,7 +34,7 @@ def get_number_of_elem() -> int:
 
         return int(width) // 250 - 1
     except:
-        return 10
+        return 4
 
 
 SETTINGS_PATH: str = os.getenv("SETTINGS_PATH", "/settings/settings.json")
@@ -53,6 +53,6 @@ REQUEST_SETTINGS: str = os.getenv("REQUEST_SETTINGS", "")
 REQUEST_WIFI: str = os.getenv("REQUEST_WIFI", "")
 REQUEST_GUI: str = os.getenv("REQUEST_GUI", "")
 REQUEST_ORDERS: str = os.getenv("REQUEST_ORDERS", "")
-
+ICO_IMG: str = "src/res/imgs/ico.png"
 ID_RASPI: str = get_serial()
 NUM_ELEM: int = get_number_of_elem()

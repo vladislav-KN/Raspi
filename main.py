@@ -9,11 +9,12 @@ from dotenv import load_dotenv
 
 from src.controlls.device_contolls.cam import CamCapture
 from src.controlls.save_loader import SaveLoad
+from src.controlls.task_controllers.base_updt import FileUpdt
 from src.controlls.task_controllers.interface_task import InterfaceInit
 from src.controlls.task_controllers.mqtt_task import MQTTBroker
 from src.controlls.task_controllers.orders_task import OrderTask
 from src.controlls.task_controllers.settings_task import SettingsTask
-from src.controlls.task_controllers.update_task import Updater
+
 
 from settings.settings import *
 from src.controlls.task_controllers.wifi_task import WifiTask
@@ -32,10 +33,10 @@ class RaspberryPiStartUp:
                                  rest_host=data["rest_host"],
                                  wifi=[WiFi(ssid=x["ssid"], password=x["password"]) for x in data["wifi"]])
         sl.file = SETTINGS_UPDT
-        self.set_updt = Updater(sl.load_from_file())
+        self.set_updt = FileUpdt(sl.load_from_file())
         self.set_task = SettingsTask(self.lock, self.set_updt, self.settings)
         self.threads = []
-        self.threads.append(Thread(target=self.set_task.settings_updator))
+        self.threads.append(Thread(target=self.set_task.updater))
         self.threads[len(self.threads) - 1].start()
         self.threads.append(Thread(target=self.set_updt.check_update))
         self.threads[len(self.threads) - 1].start()
@@ -45,9 +46,9 @@ class RaspberryPiStartUp:
         self.threads[len(self.threads) - 1].start()
 
         sl.file = ORDER_UPDT
-        self.ord_updt = Updater(sl.load_from_file())
+        self.ord_updt = FileUpdt(sl.load_from_file())
         self.ord_task = OrderTask(self.lock, self.ord_updt)
-        self.threads.append(Thread(target=self.ord_task.order_updator))
+        self.threads.append(Thread(target=self.ord_task.updater))
         self.threads[len(self.threads) - 1].start()
         self.threads.append(Thread(target=self.ord_updt.check_update))
         self.threads[len(self.threads) - 1].start()
@@ -57,9 +58,9 @@ class RaspberryPiStartUp:
         self.threads[len(self.threads) - 1].start()
 
         sl.file = GUI_UPDT
-        self.gui_upd = Updater(sl.load_from_file())
+        self.gui_upd = FileUpdt(sl.load_from_file())
         self.gui_init = InterfaceInit(self.lock, self.gui_upd)
-        self.pyqt = Process(target=self.gui_init.updator)
+        self.pyqt = Process(target=self.gui_init.reloader)
 
         self.camera = cv2.VideoCapture(0)
         self.cam_task = CamCapture(self.camera, self.mqtt, self.ord_task)
