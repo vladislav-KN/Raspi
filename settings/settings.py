@@ -6,7 +6,7 @@ from dotenv import load_dotenv
 load_dotenv()
 
 
-def get_serial() -> str:
+def get_serial() -> int:
     # Extract serial from cpuinfo file
     cpu_serial = "0000000000000000"
     try:
@@ -16,9 +16,9 @@ def get_serial() -> str:
                 cpu_serial = line[10:26]
         f.close()
     except:
-        cpu_serial = "ERROR000000000"
+        ...
     finally:
-        return cpu_serial
+        return int(cpu_serial, 16)
 
 
 def get_number_of_elem() -> int:
@@ -54,5 +54,5 @@ REQUEST_WIFI: str = os.getenv("REQUEST_WIFI", "")
 REQUEST_GUI: str = os.getenv("REQUEST_GUI", "")
 REQUEST_ORDERS: str = os.getenv("REQUEST_ORDERS", "")
 ICO_IMG: str = "src/res/imgs/ico.png"
-ID_RASPI: str = get_serial()
+ID_RASPI: int = get_serial()
 NUM_ELEM: int = get_number_of_elem()

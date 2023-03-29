@@ -1,12 +1,14 @@
+import json
 import platform
 import sys
+import time
 from multiprocessing import Process
 from threading import Lock, Thread
 
 import cv2
 # from RPi import GPIO
 from dotenv import load_dotenv
-
+import requests
 from src.controlls.device_contolls.cam import CamCapture
 from src.controlls.save_loader import SaveLoad
 from src.controlls.task_controllers.base_updt import FileUpdt
@@ -23,8 +25,44 @@ from src.objects.loading_files import Settings, WiFi
 load_dotenv()
 
 
+def download():
+    while True:
+        try:
+            if not os.path.isfile(os.getcwd() + SETTINGS_PATH):
+                sl = SaveLoad(SETTINGS_PATH)
+                req = requests.request('GET', REQUEST_SETTINGS+f"/settings/{ID_RASPI}")
+                if req.status_code < 300:
+                    data = json.loads(req.text)
+                    sl.save_to_file(data)
+                    print("settings loaded")
+                else:
+                    print("settings: " + str(req))
+            elif not os.path.isfile(os.getcwd() + DATA_FOR_GUI):
+                sl = SaveLoad(DATA_FOR_GUI)
+                req = requests.request('GET', REQUEST_GUI + f"/gui/{ID_RASPI}")
+                if req.status_code < 300:
+                    data = json.loads(req.text)
+                    sl.save_to_file(data)
+                    print("gui loaded")
+                else:
+                    print("gui: " + str(req))
+            elif not os.path.isfile(os.getcwd() + ORDERS_DATA):
+                sl = SaveLoad(ORDERS_DATA)
+                req = requests.request('GET', REQUEST_ORDERS + f"/orders/{ID_RASPI}")
+                if req.status_code < 300:
+                    data = json.loads(req.text)
+                    sl.save_to_file(data)
+                    print("orders loaded")
+                else:
+                    print("order: " + str(req))
+            else:
+                break
+        except:
+            time.sleep(1)
 class RaspberryPiStartUp:
     def __init__(self):
+        download()
+
         sl = SaveLoad(SETTINGS_PATH)
         data = sl.load_from_file()
         self.lock = Lock()
